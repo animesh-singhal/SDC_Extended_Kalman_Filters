@@ -1,7 +1,12 @@
 #ifndef KALMAN_FILTER_H_
 #define KALMAN_FILTER_H_
 
+#include <iostream>
 #include "Eigen/Dense"
+
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+using namespace std;
 
 class KalmanFilter {
  public:
@@ -46,23 +51,29 @@ class KalmanFilter {
    */
   void UpdateEKF(const Eigen::VectorXd &z);
 
-  // state vector
-  Eigen::VectorXd x_;
+  /**
+   * Returns an normalized value of theta between -pi and pi
+   * @param angle which we want to normalise. Input wont be a simple number, 
+   				  it would be a single element vector
+   */  
+  Eigen::VectorXd normalize_angle(const Eigen::VectorXd &angle);
+  
+  //State vector, covariance matrix
+  VectorXd x_;         //state vector
+  MatrixXd P_;         //state covariance matrix
+  
+  //Predict matrices
+  MatrixXd F_;         //state transition matrix
+  MatrixXd Q_;         //process covariance matrix
+  
+  //Update matrices: For laser and radar
+  MatrixXd H_laser_;          //measurement matrix
+  MatrixXd R_laser_;    //measurement covariance matrix(laser)
+  
+  MatrixXd Hj_radar_;         //jacobian 
+  MatrixXd R_radar_;    //measurement covariance matrix(radar)
 
-  // state covariance matrix
-  Eigen::MatrixXd P_;
-
-  // state transition matrix
-  Eigen::MatrixXd F_;
-
-  // process covariance matrix
-  Eigen::MatrixXd Q_;
-
-  // measurement matrix
-  Eigen::MatrixXd H_;
-
-  // measurement covariance matrix
-  Eigen::MatrixXd R_;
+  
 };
 
 #endif // KALMAN_FILTER_H_
